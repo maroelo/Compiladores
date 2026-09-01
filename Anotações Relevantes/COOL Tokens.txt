@@ -29,7 +29,7 @@ TOKEN: KEY_POOL -> pool
 TOKEN: KEY_NEW -> new
 
 
-TOKEN: IDENTIFIERS -> [a-zA-Z]+
+TOKEN: IDENTIFIERS -> [a-zA-Z]{1}[\w]*
 	
 ex: x, id, foo
 
@@ -39,7 +39,7 @@ TOKEN: NUM_LITERAL -> [0-9]+
 ex: 2, 75, 92
 
 
-TOKEN: STRING_LITERAL -> "[a-zA-Z0-9\n\t]"
+TOKEN: STRING_LITERAL -> "[a-zA-Z0-9\n\t]*"
 	
 ex: "banana", "terra", "Area 51"
 
@@ -48,12 +48,12 @@ ex: "banana", "terra", "Area 51"
 	\
 	 `->  =, +, -, *, /, <-
 
-TOKEN: OP_ASSIGN -> =
+TOKEN: OP_EQUALS -> =
 TOKEN: OP_PLUS -> +
 TOKEN: OP_MINUS -> -
 TOKEN: OP_TIMES -> *
 TOKEN: OP_DIVIDE -> /
-TOKEN: OP_LARROW -> <-
+TOKEN: OP_ASSIGN -> <-
 
 
 -Delimiters
@@ -76,4 +76,4 @@ TOKEN: WS_NEWLINE -> \n
 TOKEN: WS_TAB -> \t
 
 
-TOKEN: COMMENT -> (* [a-zA-Z0-9]* *)
+TOKEN: COMMENT -> \(\*[\w\s]*\*\)
