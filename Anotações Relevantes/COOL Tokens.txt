@@ -1,0 +1,79 @@
+COOL Tokens
+-----------------
+
+
+-Keywords
+       \
+	`->  class, inherits, let, in, if, then, else, fi, while, 
+             self, true, false, not, case, esac, isvoid
+	     loop, pool, new
+
+TOKEN: KEY_CLASS -> class
+TOKEN: KEY_INHERITS -> inherits
+TOKEN: KEY_LET -> let
+TOKEN: KEY_IN -> in
+TOKEN: KEY_IF -> if
+TOKEN: KEY_THEN -> then
+TOKEN: KEY_ELSE -> else
+TOKEN: KEY_FI -> fi
+TOKEN: KEY_WHILE -> while
+TOKEN: KEY_SELF -> self
+TOKEN: KEY_TRUE -> true
+TOKEN: KEY_FALSE -> false
+TOKEN: KEY_NOT -> not
+TOKEN: KEY_CASE -> case
+TOKEN: KEY_ESAC -> esac
+TOKEN: KEY_ISVOID -> isvoid
+TOKEN: KEY_LOOP -> loop
+TOKEN: KEY_POOL -> pool
+TOKEN: KEY_NEW -> new
+
+
+TOKEN: IDENTIFIERS -> [a-zA-Z]+
+	
+ex: x, id, foo
+
+  
+TOKEN: NUM_LITERAL -> [0-9]+
+	
+ex: 2, 75, 92
+
+
+TOKEN: STRING_LITERAL -> "[a-zA-Z0-9\n\t]"
+	
+ex: "banana", "terra", "Area 51"
+
+
+-Operators
+	\
+	 `->  =, +, -, *, /, <-
+
+TOKEN: OP_ASSIGN -> =
+TOKEN: OP_PLUS -> +
+TOKEN: OP_MINUS -> -
+TOKEN: OP_TIMES -> *
+TOKEN: OP_DIVIDE -> /
+TOKEN: OP_LARROW -> <-
+
+
+-Delimiters
+	\
+	 `->  :, ;, {, }, (, )
+
+TOKEN: DELIM_COLON -> :
+TOKEN: DELIM_SEMICOLON -> ;
+TOKEN: DELIM_LBRACE -> {
+TOKEN: DELIM_RBRACE -> }
+TOKEN: DELIM_LPAREN -> (
+TOKEN: DELIM_RPAREN -> )
+
+
+-Whitespaces
+	\
+	 `->  \n, \t
+
+TOKEN: WS_NEWLINE -> \n
+TOKEN: WS_TAB -> \t
+
+
+TOKEN: COMMENT -> (* [a-zA-Z0-9]* *)
