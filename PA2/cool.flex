@@ -64,6 +64,27 @@ DARROW          =>
 {DARROW}		{ return (DARROW); }
 
  /*
+  *  Single-character operators and symbols.
+  */
+"+"	  { return '+'; }
+"="   { return '='; }
+"-"   { return '-'; }
+"*"   { return '*'; }
+"/"   { return '/'; }
+"("   { return '('; }
+")"   { return ')'; }
+"{"   { return '{'; }
+"}"   { return '}'; }
+";"   { return ';'; }
+":"   { return ':'; }
+","   { return ','; }
+"."   { return '.'; }
+"@"   { return '@'; }
+"~"   { return '~'; }
+"<"   { return '<'; }
+
+
+ /*
   * Keywords are case-insensitive except for the values true and false,
   * which must begin with a lower-case letter.
   */
