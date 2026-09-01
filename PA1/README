@@ -1,0 +1,74 @@
+
+README file for Programming Assignment 1
+========================================
+
+Your directory should now contain the following files:
+
+ Makefile -> [course dir]/assignments/PA1/Makefile
+ README
+ atoi.cl -> [course dir]/assignments/PA1/atoi.cl
+ stack.cl
+ stack.test -> [course dir]/assignments/PA1/stack.test
+
+	The Makefile contains targets for compiling and running your
+	program, as well as handing it in.
+
+	The README contains this info. Part of the assignment is to
+	answer the questions at the end of this README file.
+	Just edit this file.
+
+	atoi.cl is an implementation in Cool of the string to integer
+	conversion function known from the C language.
+
+	stack.cl is the skeleton file which you should fill in with
+	your program.
+
+	stack.test is a short test input to the stack machine. It is
+	run through your program when you hand it in, and the output
+	is also	handed in.
+
+
+        The symlinked files (see "man ln") are that way to emphasize
+        that they are read-only -- when we test your program, we already
+        have our own versions.
+
+
+Instructions
+------------
+
+	To compile and run your program, type:
+
+	% gmake test
+
+        Try it now -- it should work, and print "Nothing implemented"
+        (among a few other things).
+
+
+        To simply compile your program, type
+
+        % gmake compile
+
+
+	Instructions for turning in the assignment will be posted on the
+	course web page.
+
+	GOOD LUCK!
+
+---8<------8<------8<------8<---cut here---8<------8<------8<------8<---
+
+Questions on PA1
+----------------
+
+1. Describe your implementation of the stack machine in a single short
+   paragraph.
+A pilha é uma lista encadeada de objetos chamados de StackCommand, e, como uma lista encadeada, o atributo "next" apontoa para o item abaixo dele. Este objeto têm as subclasses, IntCommand, que armazena inteiros, o PlusCommand, pega os dois inteiros abaixo dele e soma ambos, e "retorna"(isso por que a linguagem não retorna nada de fato) um IntCommand com o resultado, e o SCommand, que organiza a ordem dos símbolos, colocando os dois Int's um seguido do outro com um PlusCommand antes de ambos, já que o PlusCommand soma os dois próximos valores na pilha. A Main faz a leitura e a execução dos comandos integrados dentro daquela String. 
+
+2. List 3 things that you like about the Cool programming language.
+- Por ser uma linguagem muito simples, ajuda bastante a entender os conceitos que estão sendo praticados neste PA1. 
+- O sistema de tipos é bem pequeno e facil de se acostumar, já que não têm tantas opções assim. 
+- A herança simples ajuda bastante em prever oque o codigo vai fazer. 
+
+3. List 3 things you DON'T like about Cool.
+- Mensagens de erro são meio vagas quando comparadas com as de outras linguagens mais utilizadas.
+- Muitas estruturas de dados muito comumente presentes em linguagens de programação não são presentes nesta linguagem, como vetores.
+- Operações booleanas são mais chatas de implementar, sempre acabando em um mundo de if/else pra fazer coisas que em outras linguagens é so um OR, ou qualquer outro operador mais simples. 
