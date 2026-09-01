@@ -8,25 +8,25 @@ COOL Tokens
              self, true, false, not, case, esac, isvoid
 	     loop, pool, new
 
-TOKEN: KEY_CLASS -> class
-TOKEN: KEY_INHERITS -> inherits
-TOKEN: KEY_LET -> let
-TOKEN: KEY_IN -> in
-TOKEN: KEY_IF -> if
-TOKEN: KEY_THEN -> then
-TOKEN: KEY_ELSE -> else
-TOKEN: KEY_FI -> fi
-TOKEN: KEY_WHILE -> while
-TOKEN: KEY_SELF -> self
-TOKEN: KEY_TRUE -> true
-TOKEN: KEY_FALSE -> false
-TOKEN: KEY_NOT -> not
-TOKEN: KEY_CASE -> case
-TOKEN: KEY_ESAC -> esac
-TOKEN: KEY_ISVOID -> isvoid
-TOKEN: KEY_LOOP -> loop
-TOKEN: KEY_POOL -> pool
-TOKEN: KEY_NEW -> new
+TOKEN: KEY_CLASS -> class ( Case insensitive )
+TOKEN: KEY_INHERITS -> inherits ( Case insensitive )
+TOKEN: KEY_LET -> let ( Case insensitive )
+TOKEN: KEY_IN -> in ( Case insensitive )
+TOKEN: KEY_IF -> if ( Case insensitive )
+TOKEN: KEY_THEN -> then ( Case insensitive )
+TOKEN: KEY_ELSE -> else ( Case insensitive )
+TOKEN: KEY_FI -> fi ( Case insensitive )
+TOKEN: KEY_WHILE -> while ( Case insensitive )
+TOKEN: KEY_SELF -> self ( Case insensitive )
+TOKEN: KEY_TRUE -> true ( Case Sensitive ) 
+TOKEN: KEY_FALSE -> false ( Case Sensitive )
+TOKEN: KEY_NOT -> not ( Case insensitive )
+TOKEN: KEY_CASE -> case ( Case insensitive )
+TOKEN: KEY_ESAC -> esac ( Case insensitive )
+TOKEN: KEY_ISVOID -> isvoid ( Case insensitive )
+TOKEN: KEY_LOOP -> loop ( Case insensitive )
+TOKEN: KEY_POOL -> pool ( Case insensitive )
+TOKEN: KEY_NEW -> new ( Case insensitive )
 
 
 TOKEN: IDENTIFIERS -> [a-zA-Z]{1}[\w]*
