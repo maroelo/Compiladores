@@ -1,0 +1,77 @@
+COOL Tokens
+-----------------
+
+
+-Keywords
+	\
+ 	 `->  class, inherits, let, in, if, then, else, fi, while, 
+          self, true, false, not, case, esac, isvoid
+	      loop, pool, new
+
+TOKEN: KEY_CLASS -> class|CLASS 					( Case insensitive )							
+TOKEN: KEY_INHERITS -> inherits|INHERITS 			( Case insensitive )
+TOKEN: KEY_LET -> let|LET 							( Case insensitive )
+TOKEN: KEY_IN -> in|IN 								( Case insensitive )
+TOKEN: KEY_IF -> if|IF								( Case insensitive )
+TOKEN: KEY_THEN -> then|THEN						( Case insensitive )
+TOKEN: KEY_ELSE -> else|ELSE 						( Case insensitive )
+TOKEN: KEY_FI -> fi|FI 								( Case insensitive )
+TOKEN: KEY_WHILE -> while|WHILE 					( Case insensitive )
+TOKEN: KEY_SELF -> self|SELF 						( Case insensitive )
+TOKEN: KEY_TRUE -> t(?:rue|RUE)						( Case Sensitive para o primeiro caractere) 
+TOKEN: KEY_FALSE -> f(?:alse|ALSE) 					( Case Sensitive para o primeiro caractere)
+TOKEN: KEY_NOT -> not|NOT 							( Case insensitive )
+TOKEN: KEY_CASE -> case|CASE 						( Case insensitive )
+TOKEN: KEY_ESAC -> esac|ESAC						( Case insensitive )
+TOKEN: KEY_ISVOID -> isvoid|ISVOID 					( Case insensitive )
+TOKEN: KEY_LOOP -> loop|LOOP 						( Case insensitive )
+TOKEN: KEY_POOL -> pool|POOL 						( Case insensitive )
+TOKEN: KEY_NEW -> new|NEW 							( Case insensitive )
+
+
+TOKEN: IDENTIFIERS -> [a-zA-Z]{1}[\w]*
+	
+ex: x, id, foo, x1, y2
+
+  
+TOKEN: NUM_LITERAL -> [0-9]+
+	
+ex: 2, 75, 92
+
+
+TOKEN: STRING_LITERAL -> "[a-zA-Z0-9\n\t]*"
+	
+ex: "banana", "terra", "Area 51"
+
+
+-Operators
+	\
+	 `->  =, +, -, *, /, <-
+
+TOKEN: OP_EQUALS -> =
+TOKEN: OP_PLUS -> +
+TOKEN: OP_MINUS -> -
+TOKEN: OP_TIMES -> *
+TOKEN: OP_DIVIDE -> /
+TOKEN: OP_ASSIGN -> <-
+
+
+-Delimiters
+	\
+	 `->  :, ;, {, }, (, )
+
+TOKEN: DELIM_COLON -> :
+TOKEN: DELIM_SEMICOLON -> ;
+TOKEN: DELIM_LBRACE -> {
+TOKEN: DELIM_RBRACE -> }
+TOKEN: DELIM_LPAREN -> (
+TOKEN: DELIM_RPAREN -> )
+
+
+-Whitespaces
+	\
+	 `->  \n, \t
+
+TOKEN: WS_NEWLINE -> \n
+TOKEN: WS_TAB -> \t
+TOKEN: COMMENT -> \(\*[\w\s]*\*\)
