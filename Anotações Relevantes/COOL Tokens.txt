@@ -3,35 +3,35 @@ COOL Tokens
 
 
 -Keywords
-       \
-	`->  class, inherits, let, in, if, then, else, fi, while, 
-             self, true, false, not, case, esac, isvoid
-	     loop, pool, new
+	\
+ 	 `->  class, inherits, let, in, if, then, else, fi, while, 
+          self, true, false, not, case, esac, isvoid
+	      loop, pool, new
 
-TOKEN: KEY_CLASS -> class ( Case insensitive )
-TOKEN: KEY_INHERITS -> inherits ( Case insensitive )
-TOKEN: KEY_LET -> let ( Case insensitive )
-TOKEN: KEY_IN -> in ( Case insensitive )
-TOKEN: KEY_IF -> if ( Case insensitive )
-TOKEN: KEY_THEN -> then ( Case insensitive )
-TOKEN: KEY_ELSE -> else ( Case insensitive )
-TOKEN: KEY_FI -> fi ( Case insensitive )
-TOKEN: KEY_WHILE -> while ( Case insensitive )
-TOKEN: KEY_SELF -> self ( Case insensitive )
-TOKEN: KEY_TRUE -> true ( Case Sensitive ) 
-TOKEN: KEY_FALSE -> false ( Case Sensitive )
-TOKEN: KEY_NOT -> not ( Case insensitive )
-TOKEN: KEY_CASE -> case ( Case insensitive )
-TOKEN: KEY_ESAC -> esac ( Case insensitive )
-TOKEN: KEY_ISVOID -> isvoid ( Case insensitive )
-TOKEN: KEY_LOOP -> loop ( Case insensitive )
-TOKEN: KEY_POOL -> pool ( Case insensitive )
-TOKEN: KEY_NEW -> new ( Case insensitive )
+TOKEN: KEY_CLASS -> class|CLASS 					( Case insensitive )							
+TOKEN: KEY_INHERITS -> inherits|INHERITS 			( Case insensitive )
+TOKEN: KEY_LET -> let|LET 							( Case insensitive )
+TOKEN: KEY_IN -> in|IN 								( Case insensitive )
+TOKEN: KEY_IF -> if|IF								( Case insensitive )
+TOKEN: KEY_THEN -> then|THEN						( Case insensitive )
+TOKEN: KEY_ELSE -> else|ELSE 						( Case insensitive )
+TOKEN: KEY_FI -> fi|FI 								( Case insensitive )
+TOKEN: KEY_WHILE -> while|WHILE 					( Case insensitive )
+TOKEN: KEY_SELF -> self|SELF 						( Case insensitive )
+TOKEN: KEY_TRUE -> t(?:rue|RUE)						( Case Sensitive para o primeiro caractere) 
+TOKEN: KEY_FALSE -> f(?:alse|ALSE) 					( Case Sensitive para o primeiro caractere)
+TOKEN: KEY_NOT -> not|NOT 							( Case insensitive )
+TOKEN: KEY_CASE -> case|CASE 						( Case insensitive )
+TOKEN: KEY_ESAC -> esac|ESAC						( Case insensitive )
+TOKEN: KEY_ISVOID -> isvoid|ISVOID 					( Case insensitive )
+TOKEN: KEY_LOOP -> loop|LOOP 						( Case insensitive )
+TOKEN: KEY_POOL -> pool|POOL 						( Case insensitive )
+TOKEN: KEY_NEW -> new|NEW 							( Case insensitive )
 
 
 TOKEN: IDENTIFIERS -> [a-zA-Z]{1}[\w]*
 	
-ex: x, id, foo
+ex: x, id, foo, x1, y2
 
   
 TOKEN: NUM_LITERAL -> [0-9]+
@@ -74,6 +74,4 @@ TOKEN: DELIM_RPAREN -> )
 
 TOKEN: WS_NEWLINE -> \n
 TOKEN: WS_TAB -> \t
-
-
 TOKEN: COMMENT -> \(\*[\w\s]*\*\)
