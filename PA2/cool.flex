@@ -49,7 +49,7 @@
  * Define names for regular expressions here.
  */
 
-KEY_CLASS			[Cc][Aa][Ss][Ss]
+KEY_CLASS			[Cc][La][Aa][Ss][Ss]
 KEY_INHERITS		[Ii][Nn][Hh][Ee][Rr][Ii][Tt][Ss]
 KEY_LET				[Ll][Ee][Tt]
 KEY_IN				[Ii][Nn]
