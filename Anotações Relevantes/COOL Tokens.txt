@@ -29,7 +29,7 @@ TOKEN: KEY_POOL -> pool|POOL 						( Case insensitive )
 TOKEN: KEY_NEW -> new|NEW 							( Case insensitive )
 
 
-TOKEN: IDENTIFIERS -> [a-zA-Z]{1}[\w]*
+TOKEN: IDENTIFIERS -> [a-z][\w]*
 	
 ex: x, id, foo, x1, y2
 
@@ -46,26 +46,30 @@ ex: "banana", "terra", "Area 51"
 
 -Operators
 	\
-	 `->  =, +, -, *, /, <-
+	 `->  =, +, -, *, /, <-, <, <=, @
 
 TOKEN: OP_EQUALS -> =
-TOKEN: OP_PLUS -> +
+TOKEN: OP_PLUS -> \+
 TOKEN: OP_MINUS -> -
-TOKEN: OP_TIMES -> *
+TOKEN: OP_TIMES -> \*
 TOKEN: OP_DIVIDE -> /
 TOKEN: OP_ASSIGN -> <-
+TOKEN: OP_LESSER -> <
+TOKEN: OP_LESSEREQ -> <=
+TOKEN: OP_DISPATCH -> @
 
 
 -Delimiters
 	\
-	 `->  :, ;, {, }, (, )
+	 `->  ., :, ;, {, }, (, )
 
+TOKEN: DELIM_DOT -> \.
 TOKEN: DELIM_COLON -> :
 TOKEN: DELIM_SEMICOLON -> ;
-TOKEN: DELIM_LBRACE -> {
-TOKEN: DELIM_RBRACE -> }
-TOKEN: DELIM_LPAREN -> (
-TOKEN: DELIM_RPAREN -> )
+TOKEN: DELIM_LBRACE -> \{
+TOKEN: DELIM_RBRACE -> \}
+TOKEN: DELIM_LPAREN -> \(
+TOKEN: DELIM_RPAREN -> \)
 
 
 -Whitespaces
