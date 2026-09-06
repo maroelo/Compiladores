@@ -29,10 +29,13 @@ TOKEN: KEY_POOL -> pool|POOL 						( Case insensitive )
 TOKEN: KEY_NEW -> new|NEW 							( Case insensitive )
 
 
-TOKEN: IDENTIFIERS -> [a-z][\w]*
+TOKEN: OBJECT_IDENTIFIERS -> [a-z][\w]*
 	
 ex: x, id, foo, x1, y2
 
+TOKEN: TYPE_IDENTIFIERS -> [A-Z][\w]*
+
+ex: Boolean, Integer, String
   
 TOKEN: NUM_LITERAL -> [0-9]+
 	
