@@ -49,25 +49,25 @@
  * Define names for regular expressions here.
  */
 
-KEY_CLASS			(?i)class
-KEY_INHERITS		(?i)inherits
-KEY_LET				(?i)let
-KEY_IN				(?i)in
-KEY_IF				(?i)if
-KEY_THEN			(?i)then
-KEY_ELSE			(?i)else
-KEY_FI				(?i)fi 						
-KEY_WHILE			(?i)while
-KEY_SELF			(?i)self 				
-KEY_TRUE			t(?i)rue
-KEY_FALSE			f(?i)alse
-KEY_NOT				(?i)not
-KEY_CASE			(?i)case
-KEY_ESAC			(?i)esac
-KEY_ISVOID			(?i)isvoid
-KEY_LOOP			(?i)loop
-KEY_POOL			(?i)pool
-KEY_NEW				(?i)new
+KEY_CLASS			[Cc][Aa][Ss][Ss]
+KEY_INHERITS		[Ii][Nn][Hh][Ee][Rr][Ii][Tt][Ss]
+KEY_LET				[Ll][Ee][Tt]
+KEY_IN				[Ii][Nn]
+KEY_IF				[Ii][Ff]
+KEY_THEN			[Tt][Hh][Ee][Nn]
+KEY_ELSE			[Ee][Ll][Ss][Ee]
+KEY_FI				[Ff][Ii]
+KEY_WHILE			[Ww][Hh][Ii][Ll][Ee]
+KEY_SELF			[Ss][Ee][Ll][Ff]
+KEY_TRUE			t[Rr][Uu][Ee]
+KEY_FALSE			f[Aa][Ll][Ss][Ee]
+KEY_NOT				[Nn][Oo][Tt]
+KEY_CASE			[Cc][Aa][Ss][Ee]
+KEY_ESAC			[Ee][Ss][Aa][Cc]
+KEY_ISVOID			[Ii][Ss][Vv][Oo][Ii][Dd]
+KEY_LOOP			[Ll][Oo][Oo][Pp]
+KEY_POOL			[Pp][Oo][Oo][Ll]
+KEY_NEW				[Nn][Ee][Ww]
 
 
 OBJECT_IDENTIFIERS 		[a-z][a-zA-Z0-9]*
