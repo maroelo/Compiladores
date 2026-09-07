@@ -77,7 +77,7 @@ class CellularAutomaton inherits IO {
 
 class Main {
     cells : CellularAutomaton;
-    p: Point;
+    failed: Boolean;
     carModel: String;
 
     main() : SELF_TYPE {
@@ -95,6 +95,10 @@ class Main {
 
             (* (*Talvez Esse então*) *)
             carModel <- " Ferrari Puro Sangue \0";
+
+            failed <- True;
+            failed <- fALSE;
+            failed <- false;    -- Falhou n pae
 
             (let countdown : Int <- 20 in
                 while countdown > 0 loop
