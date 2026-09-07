@@ -76,8 +76,8 @@ KEY_POOL			[Pp][Oo][Oo][Ll]
 KEY_NEW				[Nn][Ee][Ww]
 KEY_OF				[Oo][Ff]
 
-OBJECT_IDENTIFIERS 		[a-z][a-zA-Z0-9]*
-TYPE_IDENTIFIERS 		[A-Z][a-zA-Z0-9]*
+OBJECT_IDENTIFIERS 		[a-z_][a-zA-Z0-9_]*
+TYPE_IDENTIFIERS 		[A-Z_][a-zA-Z0-9_]*
 
 NUM_LITERAL 		[0-9]+
 STRING_LITERAL 		\"[a-zA-Z0-9]*\"
@@ -91,7 +91,7 @@ OP_LESSER			<
 OP_LESSEREQ			<=
 OP_ASSIGN			<-
 OP_DISPATCH			@
-OP_XOR				~
+OP_NEG				~
 OP_DARROW			=>
 
 
@@ -126,7 +126,7 @@ WHITESPACES 		[ \t\f\r\v]+
 						return (ERROR); 
 					}
 \(\*				{ 
-						comment_depth = 0; 
+						comment_depth = 1; 
 						BEGIN(comment); 
 					}
 
@@ -159,7 +159,6 @@ WHITESPACES 		[ \t\f\r\v]+
 {KEY_ELSE}			{ return (ELSE); }
 {KEY_FI}			{ return (FI); }
 {KEY_WHILE}			{ return (WHILE); }
-{KEY_SELF}			{ return (OBJECTID); }
 {KEY_NOT}			{ return (NOT); }
 {KEY_CASE}			{ return (CASE); }
 {KEY_ESAC}			{ return (ESAC); }
@@ -246,7 +245,7 @@ WHITESPACES 		[ \t\f\r\v]+
 {OP_TIMES}   		{ return (int)'*'; }
 {OP_DIVIDE}   		{ return (int)'/'; }
 {OP_DISPATCH}   	{ return (int)'@'; }
-{OP_XOR}   			{ return (int)'~'; }
+{OP_NEG}   			{ return (int)'~'; }
 {OP_LESSER}   		{ return (int)'<'; }
 
 {DELIM_RPAREN}   	{ return (int)')'; }
