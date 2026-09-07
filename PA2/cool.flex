@@ -64,7 +64,6 @@ KEY_THEN			[Tt][Hh][Ee][Nn]
 KEY_ELSE			[Ee][Ll][Ss][Ee]
 KEY_FI				[Ff][Ii]
 KEY_WHILE			[Ww][Hh][Ii][Ll][Ee]
-KEY_SELF			[Ss][Ee][Ll][Ff]
 KEY_TRUE			t[Rr][Uu][Ee]
 KEY_FALSE			f[Aa][Ll][Ss][Ee]
 KEY_NOT				[Nn][Oo][Tt]
@@ -121,7 +120,7 @@ WHITESPACES 		[ \t\f\r\v]+
   */
 --.*				{}
 \*\)                { 
-						cool_yylval.error_msg = "Unmatched *)."; 
+						cool_yylval.error_msg = "Unmatched *)"; 
 						return (ERROR); 
 					}
 \(\*				{ 
@@ -209,6 +208,13 @@ WHITESPACES 		[ \t\f\r\v]+
 							return (STR_CONST);
 						}
 					}
+	\\\n			{
+					curr_lineno++;
+					if (curr_buf_len < MAX_STR_CONST) {
+						*string_buf_ptr++ = '\n';
+						curr_buf_len++;
+					}
+				}
 	\n          	{
                   		BEGIN(INITIAL);
                   		curr_lineno++;
@@ -224,8 +230,14 @@ WHITESPACES 		[ \t\f\r\v]+
 							curr_buf_len++;
 						}
 					}
-	\\n   			{ 
-						if (curr_buf_len < MAX_STR_CONST) { 
+	.				{
+						if (curr_buf_len < MAX_STR_CONST) {
+							*string_buf_ptr = yytext[0];
+							string_buf_ptr++;
+							curr_buf_len++;
+						}
+					}
+	\\n   			{	if (curr_buf_len < MAX_STR_CONST) { 
 							*string_buf_ptr++ = '\n';
 							curr_buf_len++; 
 						} 
@@ -250,17 +262,15 @@ WHITESPACES 		[ \t\f\r\v]+
 					}
 	\\.   			{ 
 						if (curr_buf_len < MAX_STR_CONST) { 
-							*string_buf_ptr++ = yytext[0]; 
+							*string_buf_ptr++ = yytext[1]; 
 							curr_buf_len++; 
 						} 
 					}
-	.				{
-						if (curr_buf_len < MAX_STR_CONST) {
-							*string_buf_ptr = yytext[0];
-							string_buf_ptr++;
-							curr_buf_len++;
-						}
-					}
+	<<EOF>>         {	
+						BEGIN(INITIAL);
+                    	cool_yylval.error_msg = "EOF in string constant";
+                    	return (ERROR);
+                	}
 }
 
 
