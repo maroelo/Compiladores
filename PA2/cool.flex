@@ -43,6 +43,11 @@
 	/*
 	*  Add Your own definitions here
 	*/
+
+	static int comment_depth = 0;					// Counter for nested comments
+
+	static int null_char_in_string = 0;			
+	static int curr_buf_len = 0;	
 %}
 
  /*
@@ -75,8 +80,7 @@ OBJECT_IDENTIFIERS 		[a-z][a-zA-Z0-9]*
 TYPE_IDENTIFIERS 		[A-Z][a-zA-Z0-9]*
 
 NUM_LITERAL 		[0-9]+
-
-STRING_LITERAL 		"[a-zA-Z0-9\n\t]*"
+STRING_LITERAL 		\"[a-zA-Z0-9]*\"
 	
 OP_EQUALS			=
 OP_PLUS				\+
@@ -100,110 +104,187 @@ DELIM_RBRACE		\}
 DELIM_LPAREN		\(
 DELIM_RPAREN		\)
 
-WS_NEWLINE			\n
-WS_TAB				\t
-COMMENT				\(\*[\w\s]*\*\)
+WHITESPACES 		[ \t\f\r\v]+
+
+%x comment str
 
 %%
+
  /*
-  * Nested Comments
+  * Whitespaces
   */
-{COMMENT} {}
-\*\) {
-	cool_yylval.error_msg = "Unmatched *).";
-	return (ERROR);
+{WHITESPACES} 		{}
+\n					{ curr_lineno++; }
+
+
+ /*
+  * Comments and Nested Comments
+  */
+--.*				{}
+\*\)                { 
+						cool_yylval.error_msg = "Unmatched *)."; 
+						return (ERROR); 
+					}
+\(\*				{ 
+						comment_depth = 0; 
+						BEGIN(comment); 
+					}
+
+<comment>{
+    \n          	{ curr_lineno++; }
+	\(\*        	{ comment_depth++; }
+    \*\)        	{ 
+                  		comment_depth--;
+                  		if (comment_depth == 0) { BEGIN(INITIAL); }
+                	}
+    <<EOF>>     	{
+                  		BEGIN(INITIAL);
+                  		cool_yylval.error_msg = "EOF in comment";
+                  		return (ERROR);
+                	}
+    .           	{}
 }
-\(\*.* {
-	cool_yylval.error_msg = "Unclosed comment.";
-	return (ERROR);
-}
+
 
  /*
   * Keywords are case-insensitive except for the values true and false,
   * which must begin with a lower-case letter.
   */
-{KEY_CLASS}		{ return (CLASS); }
-{KEY_INHERITS}	{ return (INHERITS); }
-{KEY_LET}		{ return (LET); }
-{KEY_IN}		{ return (IN); }
-{KEY_IF}		{ return (IF); }
-{KEY_THEN}		{ return (THEN); }
-{KEY_ELSE}		{ return (ELSE); }
-{KEY_FI}		{ return (FI); }
-{KEY_WHILE}		{ return (WHILE); }
-{KEY_SELF}		{ return (); }
-{KEY_TRUE}		{ cool_yylval.boolean = true; return (BOOL_CONST); }
-{KEY_FALSE}		{ cool_yylval.boolean = true; return (BOOL_CONST); }
-{KEY_NOT}		{ return (NOT); }
-{KEY_CASE}		{ return (CASE); }
-{KEY_ESAC}		{ return (ESAC); }
-{KEY_ISVOID}	{ return (ISVOID); }
-{KEY_LOOP}		{ return (LOOP); }
-{KEY_POOL}		{ return (POOL); }
-{KEY_NEW}		{ return (NEW); }
+{KEY_CLASS}			{ return (CLASS); }
+{KEY_INHERITS}		{ return (INHERITS); }
+{KEY_LET}			{ return (LET); }
+{KEY_IN}			{ return (IN); }
+{KEY_IF}			{ return (IF); }
+{KEY_THEN}			{ return (THEN); }
+{KEY_ELSE}			{ return (ELSE); }
+{KEY_FI}			{ return (FI); }
+{KEY_WHILE}			{ return (WHILE); }
+{KEY_SELF}			{ return (OBJECTID); }
+{KEY_NOT}			{ return (NOT); }
+{KEY_CASE}			{ return (CASE); }
+{KEY_ESAC}			{ return (ESAC); }
+{KEY_ISVOID}		{ return (ISVOID); }
+{KEY_LOOP}			{ return (LOOP); }
+{KEY_POOL}			{ return (POOL); }
+{KEY_NEW}			{ return (NEW); }
 
+{KEY_TRUE}			{ cool_yylval.boolean = 1; return (BOOL_CONST); }
+{KEY_FALSE}			{ cool_yylval.boolean = 0; return (BOOL_CONST); }
+ 
  /*
   *  The multiple-character operators.
   */
-{OP_DARROW}		{ return(DARROW); }
-{OP_LESSEREQ}	{ return(LE); }
-{OP_ASSIGN}		{ return(ASSIGN); }
+{OP_DARROW}			{ return(DARROW); }
+{OP_LESSEREQ}		{ return(LE); }
+{OP_ASSIGN}			{ return(ASSIGN); }
+
 
  /*
   *  String constants (C syntax)
   *  Escape sequence \c is accepted for all characters c. Except for 
   *  \n \t \b \f, the result is c.
   */
-{STRING_LITERAL} {
-	if(yyleng > MAX_STR_CONST) {
-		cool_yylval.error_msg = "String constant too long.";
-		return (ERROR);
-	} else {
-		return (STR_CONST);
-	}
+
+\" 					{ 
+						string_buf_ptr = string_buf;
+						curr_buf_len = 0;
+
+						null_char_in_string = 0;
+						
+						BEGIN(str); 
+					}
+
+<str>{
+	\"				{
+						BEGIN(INITIAL);
+						*string_buf_ptr = '\0';
+
+						if (null_char_in_string) {
+							cool_yylval.error_msg = "String contains null character";
+							return (ERROR);
+						} else if (curr_buf_len >= MAX_STR_CONST) {
+							cool_yylval.error_msg = "String constant too long";
+							return (ERROR);
+						} else {
+							cool_yylval.symbol = stringtable.add_string(string_buf);
+							return (STR_CONST);
+						}
+					}
+	\n          	{
+                  		BEGIN(INITIAL);
+                  		curr_lineno++;
+                  		cool_yylval.error_msg = "Unterminated string constant";
+                  		return (ERROR);
+                	}
+	\0				{
+						null_char_in_string = 1;
+					}
+	\\0				{
+						if (curr_buf_len < MAX_STR_CONST) {
+							*string_buf_ptr = '0';
+							string_buf_ptr++;
+							curr_buf_len++;
+						}
+					}
+	.				{
+						if (curr_buf_len < MAX_STR_CONST) {
+							*string_buf_ptr = yytext[0];
+							string_buf_ptr++;
+							curr_buf_len++;
+						}
+					}
 }
-"[a-zA-Z0-9\n\t]* {
-	cool_yylval.error_msg = "Unclosed string literal.";
-	return (ERROR);
-}
+
 
  /*
   *  Single-character operators and symbols.
   */
-{OP_PLUS}	  			{ return (int)'+'; }
-{OP_EQUALS}   			{ return (int)'='; }
-{OP_MINUS}   			{ return (int)'-'; }
-{OP_TIMES}   			{ return (int)'*'; }
-{OP_DIVIDE}   			{ return (int)'/'; }
-{OP_DISPATCH}   		{ return (int)'@'; }
-{OP_XOR}   				{ return (int)'~'; }
-{OP_LESSER}   			{ return (int)'<'; }
+{OP_PLUS}	  		{ return (int)'+'; }
+{OP_EQUALS}   		{ return (int)'='; }
+{OP_MINUS}   		{ return (int)'-'; }
+{OP_TIMES}   		{ return (int)'*'; }
+{OP_DIVIDE}   		{ return (int)'/'; }
+{OP_DISPATCH}   	{ return (int)'@'; }
+{OP_XOR}   			{ return (int)'~'; }
+{OP_LESSER}   		{ return (int)'<'; }
 
-{DELIM_RPAREN}   		{ return (int)')'; }
-{DELIM_LPAREN}   		{ return (int)'('; }
-{DELIM_LBRACE}   		{ return (int)'{'; }
-{DELIM_RBRACE}   		{ return (int)'}'; }
-{DELIM_SEMICOLON}   	{ return (int)';'; }
-{DELIM_COLON}   		{ return (int)':'; }
-{DELIM_COMMA}   		{ return (int)','; }
-{DELIM_DOT}   			{ return (int)'.'; }
+{DELIM_RPAREN}   	{ return (int)')'; }
+{DELIM_LPAREN}   	{ return (int)'('; }
+{DELIM_LBRACE}   	{ return (int)'{'; }
+{DELIM_RBRACE}   	{ return (int)'}'; }
+{DELIM_SEMICOLON}   { return (int)';'; }
+{DELIM_COLON}   	{ return (int)':'; }
+{DELIM_COMMA}   	{ return (int)','; }
+{DELIM_DOT}   		{ return (int)'.'; }
 
  /*
   * Integer constants.
   */
-{NUM_LITERAL} {
-	cool_yylval.symbol = inttable.add_string(yytext);
-	return INT_CONST;
-}
+{NUM_LITERAL} 		{
+						cool_yylval.symbol = inttable.add_string(yytext);
+						return INT_CONST;
+					}
 
  /*
   * Identifiers.
   */
 {OBJECT_IDENTIFIERS} {
-	return (OBJECTID);
-}
+						cool_yylval.symbol = idtable.add_string(yytext);
+						return (OBJECTID);
+					 }
 
-{TYPE_IDENTIFIERS} {
-	return (TYPEID);
-}
+{TYPE_IDENTIFIERS}	{
+						cool_yylval.symbol = idtable.add_string(yytext);
+						return (TYPEID);
+					}
+
+ /*
+  * Invalid characters
+  * If a character doesn't match with any rule above, than it's not a valid character in this language
+  * . -> matches every single character
+  */
+. 					{
+						cool_yylval.error_msg = yytext;
+						return (ERROR);
+					}
 %%
