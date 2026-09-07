@@ -147,7 +147,7 @@ COMMENT				\(\*[\w\s]*\*\)
   */
 {OP_DARROW}		{ return(DARROW); }
 {OP_LESSEREQ}	{ return(LE); }
-
+{OP_ASSIGN}		{ return(ASSIGN); }
 
  /*
   *  String constants (C syntax)
