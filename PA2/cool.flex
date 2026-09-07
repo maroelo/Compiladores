@@ -121,7 +121,7 @@ WHITESPACES 		[ \t\f\r\v]+
   */
 --.*				{}
 \*\)                { 
-						cool_yylval.error_msg = "Unmatched *)."; 
+						cool_yylval.error_msg = "Unmatched *)"; 
 						return (ERROR); 
 					}
 \(\*				{ 
@@ -231,7 +231,9 @@ WHITESPACES 		[ \t\f\r\v]+
 							curr_buf_len++;
 						}
 					}
-	\\n   			{ if (curr_buf_len < MAX_STR_CONST) { 
+	\\n   			{
+					curr_lineno++;
+					if (curr_buf_len < MAX_STR_CONST) { 
 							*string_buf_ptr++ = '\n';
 							curr_buf_len++; 
 						} 
@@ -256,6 +258,11 @@ WHITESPACES 		[ \t\f\r\v]+
 						curr_buf_len++; 
 						} 
 					}
+	<<EOF>>         {	
+						BEGIN(INITIAL);
+                    	cool_yylval.error_msg = "EOF in string constant";
+                    	return (ERROR);
+                	}
 }
 
 
