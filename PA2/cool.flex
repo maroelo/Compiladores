@@ -78,17 +78,17 @@ NUM_LITERAL 		[0-9]+
 
 STRING_LITERAL 		"[a-zA-Z0-9\n\t]*"
 	
-OP_EQUALS			=  
-OP_PLUS				\+ 
-OP_MINUS			-  
-OP_TIMES			\* 
-OP_DIVIDE			\/ 
-OP_LESSER			<  
-OP_LESSEREQ			<= 
-OP_ASSIGN			<- 
-OP_DISPATCH			@  
-OP_XOR				~  
-DARROW				=> 
+OP_EQUALS			=
+OP_PLUS				\+
+OP_MINUS			-
+OP_TIMES			\*
+OP_DIVIDE			\/
+OP_LESSER			<
+OP_LESSEREQ			<=
+OP_ASSIGN			<-
+OP_DISPATCH			@
+OP_XOR				~
+OP_DARROW			=>
 
 
 DELIM_DOT			\. 
@@ -105,23 +105,23 @@ WS_TAB				\t
 COMMENT				\(\*[\w\s]*\*\)
 
 %%
-
  /*
-  *  Nested comments
+  * Nested Comments
   */
-
+{COMMENT} {}
+\*\) {
+	cool_yylval.error_msg = "Unmatched *).";
+	return (ERROR);
+}
+\(\*.* {
+	cool_yylval.error_msg = "Unclosed comment.";
+	return (ERROR);
+}
 
  /*
-  *  The multiple-character operators.
+  * Keywords are case-insensitive except for the values true and false,
+  * which must begin with a lower-case letter.
   */
-{DARROW}		{ return (DARROW); }
-{OP_LESSEREQ}	{ return (LE); }
-{OP_ASSIGN}		{ return (ASSIGN); }
-
- /*
- * Keywords are case-insensitive except for the values true and false,
- * which must begin with a lower-case letter.
- */
 {KEY_CLASS}		{ return (CLASS); }
 {KEY_INHERITS}	{ return (INHERITS); }
 {KEY_LET}		{ return (LET); }
@@ -158,36 +158,87 @@ KEY_ISVOID			[Ii][Ss][Vv][Oo][Ii][Dd]
 KEY_LOOP			[Ll][Oo][Oo][Pp]
 KEY_POOL			[Pp][Oo][Oo][Ll]
 KEY_NEW				[Nn][Ee][Ww]
- /*
- *  String constants (C syntax)
- *  Escape sequence \c is accepted for all characters c. Except for 
- *  \n \t \b \f, the result is c.
- */
+{KEY_INHERITS}	{ return (INHERITS); }
+{KEY_LET}		{ return (LET); }
+{KEY_IN}		{ return (IN); }
+{KEY_IF}		{ return (IF); }
+{KEY_THEN}		{ return (THEN); }
+{KEY_ELSE}		{ return (ELSE); }
+{KEY_FI}		{ return (FI); }
+{KEY_WHILE}		{ return (WHILE); }
+{KEY_SELF}		{ return (); }
+{KEY_TRUE}		{ cool_yylval.boolean = true; return (BOOL_CONST); }
+{KEY_FALSE}		{ cool_yylval.boolean = true; return (BOOL_CONST); }
+{KEY_NOT}		{ return (NOT); }
+{KEY_CASE}		{ return (CASE); }
+{KEY_ESAC}		{ return (ESAC); }
+{KEY_ISVOID}	{ return (ISVOID); }
+{KEY_LOOP}		{ return (LOOP); }
+{KEY_POOL}		{ return (POOL); }
+{KEY_NEW}		{ return (NEW); }
 
  /*
- *  Single-character operators and symbols.
- */
+  *  The multiple-character operators.
+  */
+{OP_DARROW}		{ return(DARROW); }
+{OP_LESSEREQ}	{ return(LE); }
+{OP_ASSIGN}		{ return(ASSIGN); }
 
-{OP_PLUS}	  			{ return '+'; }
-{OP_EQUALS}   			{ return '='; }
-{OP_MINUS}   			{ return '-'; }
-{OP_TIMES}   			{ return '*'; }
-{OP_DIVIDE}             { return '/'; }
-{OP_DISPATCH}           { return '@'; }
-{OP_XOR}   				{ return '~'; }
-{OP_LESSER}   			{ return '<'; }
+ /*
+  *  String constants (C syntax)
+  *  Escape sequence \c is accepted for all characters c. Except for 
+  *  \n \t \b \f, the result is c.
+  */
+{STRING_LITERAL} {
+	if(yyleng > MAX_STR_CONST) {
+		cool_yylval.error_msg = "String constant too long.";
+		return (ERROR);
+	} else {
+		return (STR_CONST);
+	}
+}
+"[a-zA-Z0-9\n\t]* {
+	cool_yylval.error_msg = "Unclosed string literal.";
+	return (ERROR);
+}
 
-{DELIM_RPAREN}   		{ return ')'; }
-{DELIM_LPAREN}   		{ return '('; }
-{DELIM_LBRACE}   		{ return '{'; }
-{DELIM_RBRACE}   		{ return '}'; }
-{DELIM_SEMICOLON}   	{ return ';'; }
-{DELIM_COLON}   		{ return ':'; }
-{DELIM_COMMA}   		{ return ','; }
-{DELIM_DOT}   			{ return '.'; }
+ /*
+  *  Single-character operators and symbols.
+  */
+{OP_PLUS}	  			{ return (int)'+'; }
+{OP_EQUALS}   			{ return (int)'='; }
+{OP_MINUS}   			{ return (int)'-'; }
+{OP_TIMES}   			{ return (int)'*'; }
+{OP_DIVIDE}   			{ return (int)'/'; }
+{OP_DISPATCH}   		{ return (int)'@'; }
+{OP_XOR}   				{ return (int)'~'; }
+{OP_LESSER}   			{ return (int)'<'; }
 
+{DELIM_RPAREN}   		{ return (int)')'; }
+{DELIM_LPAREN}   		{ return (int)'('; }
+{DELIM_LBRACE}   		{ return (int)'{'; }
+{DELIM_RBRACE}   		{ return (int)'}'; }
+{DELIM_SEMICOLON}   	{ return (int)';'; }
+{DELIM_COLON}   		{ return (int)':'; }
+{DELIM_COMMA}   		{ return (int)','; }
+{DELIM_DOT}   			{ return (int)'.'; }
+
+ /*
+  * Integer constants.
+  */
 {NUM_LITERAL} {
 	cool_yylval.symbol = inttable.add_string(yytext);
 	return INT_CONST;
+}
+
+ /*
+  * Identifiers.
+  */
+{OBJECT_IDENTIFIERS} {
+	return (OBJECTID);
+}
+
+{TYPE_IDENTIFIERS} {
+	return (TYPEID);
 }
 %%
