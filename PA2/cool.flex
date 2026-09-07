@@ -1,8 +1,8 @@
-/*
+ /*
  *  The scanner definition for COOL.
  */
 
-/*
+ /*
  *  Stuff enclosed in %{ %} in the first section is copied verbatim to the
  *  output, so headers and global definitions are placed here to be visible
  * to the code in the file.  Don't remove anything that was here initially
@@ -45,11 +45,12 @@
 	*/
 %}
 
-/*
+ /*
  * Define names for regular expressions here.
  */
 
-KEY_CLASS			[Cc][La][Aa][Ss][Ss]
+
+KEY_CLASS			[Cc][Ll][Aa][Ss][Ss]   
 KEY_INHERITS		[Ii][Nn][Hh][Ee][Rr][Ii][Tt][Ss]
 KEY_LET				[Ll][Ee][Tt]
 KEY_IN				[Ii][Nn]
@@ -90,7 +91,7 @@ OP_XOR				~
 OP_DARROW			=>
 
 
-DELIM_DOT			\.
+DELIM_DOT			\. 
 DELIM_COLON			:
 DELIM_SEMICOLON		;
 DELIM_COMMA			,
