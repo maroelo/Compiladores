@@ -224,37 +224,42 @@ WHITESPACES 		[ \t\f\r\v]+
 							curr_buf_len++;
 						}
 					}
+	\\n   			{ 
+						if (curr_buf_len < MAX_STR_CONST) { 
+							*string_buf_ptr++ = '\n';
+							curr_buf_len++; 
+						} 
+					}
+	\\t   			{ 
+						if (curr_buf_len < MAX_STR_CONST)	{ 
+							*string_buf_ptr++ = '\t'; 
+							curr_buf_len++;
+						}
+					}
+	\\b   			{ 
+						if (curr_buf_len < MAX_STR_CONST) { 
+							*string_buf_ptr++ = '\b'; 
+							curr_buf_len++; 
+						} 
+					}
+	\\f   			{ 
+						if (curr_buf_len < MAX_STR_CONST) { 
+							*string_buf_ptr++ = '\f';
+							curr_buf_len++; 
+						} 
+					}
+	\\.   			{ 
+						if (curr_buf_len < MAX_STR_CONST) { 
+							*string_buf_ptr++ = yytext[0]; 
+							curr_buf_len++; 
+						} 
+					}
 	.				{
 						if (curr_buf_len < MAX_STR_CONST) {
 							*string_buf_ptr = yytext[0];
 							string_buf_ptr++;
 							curr_buf_len++;
 						}
-					}
-	\\n   			{ if (curr_buf_len < MAX_STR_CONST) { 
-							*string_buf_ptr++ = '\n';
-							curr_buf_len++; 
-						} 
-					}
-	\\t   			{ if (curr_buf_len < MAX_STR_CONST)	{ 
-						*string_buf_ptr++ = '\t'; 
-						curr_buf_len++;
-						}
-					}
-	\\b   			{ if (curr_buf_len < MAX_STR_CONST) { 
-						*string_buf_ptr++ = '\b'; 
-						curr_buf_len++; 
-						} 
-					}
-	\\f   			{ if (curr_buf_len < MAX_STR_CONST) { 
-						*string_buf_ptr++ = '\f';
-						curr_buf_len++; 
-						} 
-					}
-	\\.   			{ if (curr_buf_len < MAX_STR_CONST) { 
-						*string_buf_ptr++ = yytext[1]; 
-						curr_buf_len++; 
-						} 
 					}
 }
 
