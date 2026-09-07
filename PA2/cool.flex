@@ -69,7 +69,7 @@ KEY_ISVOID			[Ii][Ss][Vv][Oo][Ii][Dd]
 KEY_LOOP			[Ll][Oo][Oo][Pp]
 KEY_POOL			[Pp][Oo][Oo][Ll]
 KEY_NEW				[Nn][Ee][Ww]
-
+KEY_OF				[Oo][Ff]
 
 OBJECT_IDENTIFIERS 		[a-z][a-zA-Z0-9]*
 TYPE_IDENTIFIERS 		[A-Z][a-zA-Z0-9]*
@@ -123,24 +123,24 @@ COMMENT				\(\*[\w\s]*\*\)
  * which must begin with a lower-case letter.
  */
 {KEY_CLASS}		{ return (CLASS); }
-{KEY_INHERITS}	{return (INHERITS); }
-{KEY_LET}		{return (LET); }
-{KEY_IN}		{return (IN); }
-{KEY_IF}		{return (IF); }
-{KEY_THEN}		{return (THEN); }
-{KEY_ELSE}		{return (ELSE); }
-{KEY_FI}		{return (FI); }
-{KEY_WHILE}		{return (WHILE); }
-{KEY_SELF}		{return (); }
-{KEY_TRUE}		{cool_yylval.boolean = true; return (BOOL_CONST); }
-{KEY_FALSE}		{cool_yylval.boolean = true; return (BOOL_CONST); }
-{KEY_NOT}		{return (NOT); }
-{KEY_CASE}		{return (CASE); }
-{KEY_ESAC}		{return (ESAC); }
-{KEY_ISVOID}	{return (ISVOID); }
-{KEY_LOOP}		{return (LOOP); }
-{KEY_POOL}		{return (POOL); }
-{KEY_NEW}		{return (NEW); }
+{KEY_INHERITS}	{ return (INHERITS); }
+{KEY_LET}		{ return (LET); }
+{KEY_IN}		{ return (IN); }
+{KEY_IF}		{ return (IF); }
+{KEY_THEN}		{ return (THEN); }
+{KEY_ELSE}		{ return (ELSE); }
+{KEY_FI}		{ return (FI); }
+{KEY_WHILE}		{ return (WHILE); }
+{KEY_TRUE}		{ cool_yylval.boolean = true; return (BOOL_CONST); }
+{KEY_FALSE}		{ cool_yylval.boolean = false; return (BOOL_CONST); }
+{KEY_NOT}		{ return (NOT); }
+{KEY_CASE}		{ return (CASE); }
+{KEY_ESAC}		{ return (ESAC); }
+{KEY_ISVOID}	{ return (ISVOID); }
+{KEY_LOOP}		{ return (LOOP); }
+{KEY_POOL}		{ return (POOL); }
+{KEY_NEW}		{ return (NEW); }
+{KEY_Of}		{ return (OF); }
 
 
 KEY_IF				[Ii][Ff]
