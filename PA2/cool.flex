@@ -76,8 +76,8 @@ KEY_POOL			[Pp][Oo][Oo][Ll]
 KEY_NEW				[Nn][Ee][Ww]
 KEY_OF				[Oo][Ff]
 
-OBJECT_IDENTIFIERS 		[a-z_][a-zA-Z0-9_]*
-TYPE_IDENTIFIERS 		[A-Z_][a-zA-Z0-9_]*
+OBJECT_IDENTIFIERS 		[a-z][a-zA-Z0-9_]*
+TYPE_IDENTIFIERS 		[A-Z][a-zA-Z0-9_]*
 
 NUM_LITERAL 		[0-9]+
 STRING_LITERAL 		\"[a-zA-Z0-9]*\"
