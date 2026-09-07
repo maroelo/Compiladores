@@ -49,6 +49,7 @@
  * Define names for regular expressions here.
  */
 
+
 KEY_CLASS			[Cc][Ll][Aa][Ss][Ss]   
 KEY_INHERITS		[Ii][Nn][Hh][Ee][Rr][Ii][Tt][Ss]
 KEY_LET				[Ll][Ee][Tt]
