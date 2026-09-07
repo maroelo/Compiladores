@@ -74,7 +74,7 @@ KEY_ISVOID			[Ii][Ss][Vv][Oo][Ii][Dd]
 KEY_LOOP			[Ll][Oo][Oo][Pp]
 KEY_POOL			[Pp][Oo][Oo][Ll]
 KEY_NEW				[Nn][Ee][Ww]
-
+KEY_OF				[Oo][Ff]
 
 OBJECT_IDENTIFIERS 		[a-z][a-zA-Z0-9]*
 TYPE_IDENTIFIERS 		[A-Z][a-zA-Z0-9]*
@@ -167,6 +167,7 @@ WHITESPACES 		[ \t\f\r\v]+
 {KEY_LOOP}			{ return (LOOP); }
 {KEY_POOL}			{ return (POOL); }
 {KEY_NEW}			{ return (NEW); }
+{KEY_OF}			{ return (OF); }
 
 {KEY_TRUE}			{ cool_yylval.boolean = 1; return (BOOL_CONST); }
 {KEY_FALSE}			{ cool_yylval.boolean = 0; return (BOOL_CONST); }
