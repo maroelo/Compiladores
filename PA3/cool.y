@@ -4,15 +4,31 @@
  *
  */
 %{
-#include <iostream.h>
+/* #include <iostream.h> *\
+#include "cool-io.h"
 #include "cool-tree.h"
 #include "stringtab.h"
 #include "utilities.h"
 
 extern char *curr_filename;
 
-void yyerror(char *s);        /*  defined below; called for each parse error */
+void yyerror(const char *s);  /*  defined below; called for each parse error */
 extern int yylex();           /*  the entry point to the lexer  */
+
+#define YYLTYPE int
+#define cool_yylloc curr_lineno
+
+extern int node_lineno;
+
+#define YYLLOC_DEFAULT(Current, Rhs, N)            \
+  do {                                             \
+    if (N) (Current) = YYRHSLOC(Rhs, 1);           \
+    else   (Current) = YYRHSLOC(Rhs, 0);           \
+    node_lineno = (Current);                       \
+  } while (0)
+
+#define SELF_SYM   idtable.add_string((char *) "self")
+#define OBJECT_SYM idtable.add_string((char *) "Object")
 
 /************************************************************************/
 /*                DONT CHANGE ANYTHING IN THIS SECTION                  */
@@ -61,10 +77,12 @@ int omerrs = 0;               /* number of errors in lexing and parsing */
 
 /*  DON'T CHANGE ANYTHING ABOVE THIS LINE, OR YOUR PARSER WONT WORK       */
 /**************************************************************************/
- 
+
    /* Complete the nonterminal list below, giving a type for the semantic
       value of each non terminal. (See section 3.6 in the bison 
       documentation for details). */
+
+%locations
 
 /* Declare types for the grammar's non-terminals. */
 %type <program> program
@@ -72,7 +90,14 @@ int omerrs = 0;               /* number of errors in lexing and parsing */
 %type <class_> class
 
 /* You will want to change the following line. */
-%type <features> dummy_feature_list
+%type <features> feature_list
+%type <feature> feature
+%type <formals> formal_list formals
+%type <formal> formal
+%type <cases> case_list
+%type <case_> case_branch
+%type <expression> expr opt_init
+%type <expressions> expr_block_list arg_list args
 
 /* Precedence declarations go here. */
 
@@ -94,23 +119,142 @@ class_list
 	;
 
 /* If no parent is specified, the class inherits from the Object class. */
-class	: CLASS TYPEID '{' dummy_feature_list '}' ';'
-		{ $$ = class_($2,idtable.add_string("Object"),$4,
+class	: CLASS TYPEID '{' feature_list '}' ';'
+		{ $$ = class_($2,OBJECT_SYM,$4,
 			      stringtable.add_string(curr_filename)); }
-	| CLASS TYPEID INHERITS TYPEID '{' dummy_feature_list '}' ';'
+	| CLASS TYPEID INHERITS TYPEID '{' feature_list '}' ';'
 		{ $$ = class_($2,$4,$6,stringtable.add_string(curr_filename)); }
 	;
 
 /* Feature list may be empty, but no empty features in list. */
-dummy_feature_list:		/* empty */
-                {  $$ = nil_Features(); }
+feature_list
+	: /* empty */
+		{ $$ = nil_Features(); }
+	| feature_list feature ';'
+		{ $$ = append_Features($1,single_Features($2)); }
+	;
 
+feature
+	: OBJECTID '(' formals ')' ':' TYPEID '{' expr '}'
+		{ $$ = method($1,$3,$6,$8); }
+	| OBJECTID ':' TYPEID opt_init
+		{ $$ = attr($1,$3,$4); }
+	;
+
+opt_init
+	: /* empty */
+		{ $$ = no_expr(); }
+	| ASSIGN expr
+		{ $$ = $2; }
+	;
+
+formals
+	: /* empty */
+		{ $$ = nil_Formals(); }
+	| formal_list
+		{ $$ = $1; }
+	;
+
+formal_list
+	: formal
+		{ $$ = single_Formals($1); }
+	| formal_list ',' formal
+		{ $$ = append_Formals($1,single_Formals($3)); }
+	;
+
+formal	: OBJECTID ':' TYPEID
+		{ $$ = formal($1,$3); }
+	;
+
+args
+	: /* empty */
+		{ $$ = nil_Expressions(); }
+	| arg_list
+		{ $$ = $1; }
+	;
+
+arg_list
+	: expr
+		{ $$ = single_Expressions($1); }
+	| arg_list ',' expr
+		{ $$ = append_Expressions($1,single_Expressions($3)); }
+	;
+
+expr_block_list
+	: expr ';'
+		{ $$ = single_Expressions($1); }
+	| expr_block_list expr ';'
+		{ $$ = append_Expressions($1,single_Expressions($2)); }
+	;
+
+case_list
+	: case_branch
+		{ $$ = single_Cases($1); }
+	| case_list case_branch
+		{ $$ = append_Cases($1,single_Cases($2)); }
+	;
+
+case_branch
+	: OBJECTID ':' TYPEID DARROW expr ';'
+		{ $$ = branch($1,$3,$5); }
+	;
+
+expr
+	: OBJECTID ASSIGN expr
+		{ $$ = assign($1,$3); }
+	| expr '@' TYPEID '.' OBJECTID '(' args ')'
+		{ $$ = static_dispatch($1,$3,$5,$7); }
+	| expr '.' OBJECTID '(' args ')'
+		{ $$ = dispatch($1,$3,$5); }
+	| OBJECTID '(' args ')'
+		{ $$ = dispatch(object(SELF_SYM),$1,$3); }
+	| IF expr THEN expr ELSE expr FI
+		{ $$ = cond($2,$4,$6); }
+	| WHILE expr LOOP expr POOL
+		{ $$ = loop($2,$4); }
+	| '{' expr_block_list '}'
+		{ $$ = block($2); }
+	| CASE expr OF case_list ESAC
+		{ $$ = typcase($2,$4); }
+	| NEW TYPEID
+		{ $$ = new_($2); }
+	| ISVOID expr
+		{ $$ = isvoid($2); }
+	| expr '+' expr
+		{ $$ = plus($1,$3); }
+	| expr '-' expr
+		{ $$ = sub($1,$3); }
+	| expr '*' expr
+		{ $$ = mul($1,$3); }
+	| expr '/' expr
+		{ $$ = divide($1,$3); }
+	| '~' expr
+		{ $$ = neg($2); }
+	| expr '<' expr
+		{ $$ = lt($1,$3); }
+	| expr LE expr
+		{ $$ = leq($1,$3); }
+	| expr '=' expr
+		{ $$ = eq($1,$3); }
+	| NOT expr
+		{ $$ = comp($2); }
+	| '(' expr ')'
+		{ $$ = $2; }
+	| OBJECTID
+		{ $$ = object($1); }
+	| INT_CONST
+		{ $$ = int_const($1); }
+	| STR_CONST
+		{ $$ = string_const($1); }
+	| BOOL_CONST
+		{ $$ = bool_const($1); }
+	;
 
 /* end of grammar */
 %%
 
 /* This function is called automatically when Bison detects a parse error. */
-void yyerror(char *s)
+void yyerror(const char *s)
 {
   extern int curr_lineno;
 
@@ -122,4 +266,3 @@ void yyerror(char *s)
 
   if(omerrs>50) {fprintf(stdout, "More than 50 errors\n"); exit(1);}
 }
-
