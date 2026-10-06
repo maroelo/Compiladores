@@ -237,7 +237,8 @@ WHITESPACES 		[ \t\f\r\v]+
 							curr_buf_len++;
 						}
 					}
-	\\n   			{	if (curr_buf_len < MAX_STR_CONST) { 
+	\\n   			{	
+						if (curr_buf_len < MAX_STR_CONST) { 
 							*string_buf_ptr++ = '\n';
 							curr_buf_len++; 
 						} 
