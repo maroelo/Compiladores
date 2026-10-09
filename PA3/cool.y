@@ -4,7 +4,6 @@
  *
  */
 %{
-/* #include <iostream.h> *\
 #include "cool-io.h"
 #include "cool-tree.h"
 #include "stringtab.h"
@@ -56,7 +55,7 @@ int omerrs = 0;               /* number of errors in lexing and parsing */
   char *error_msg;
 }
 
-/* 
+/*
    Declare the terminals; a few have types for associated lexemes.
    The token ERROR is never used in the parser; thus, it is a parse
    error when the lexer returns it.
@@ -67,20 +66,16 @@ int omerrs = 0;               /* number of errors in lexing and parsing */
    problems (bison 1.25 and earlier start at 258, later versions -- at
    257)
 */
-%token CLASS 258 ELSE 259 FI 260 IF 261 IN 262 
+%token CLASS 258 ELSE 259 FI 260 IF 261 IN 262
 %token INHERITS 263 LET 264 LOOP 265 POOL 266 THEN 267 WHILE 268
 %token CASE 269 ESAC 270 OF 271 DARROW 272 NEW 273 ISVOID 274
-%token <symbol>  STR_CONST 275 INT_CONST 276 
+%token <symbol>  STR_CONST 275 INT_CONST 276
 %token <boolean> BOOL_CONST 277
-%token <symbol>  TYPEID 278 OBJECTID 279 
+%token <symbol>  TYPEID 278 OBJECTID 279
 %token ASSIGN 280 NOT 281 LE 282 ERROR 283
 
 /*  DON'T CHANGE ANYTHING ABOVE THIS LINE, OR YOUR PARSER WONT WORK       */
 /**************************************************************************/
-
-   /* Complete the nonterminal list below, giving a type for the semantic
-      value of each non terminal. (See section 3.6 in the bison 
-      documentation for details). */
 
 %locations
 
@@ -88,22 +83,29 @@ int omerrs = 0;               /* number of errors in lexing and parsing */
 %type <program> program
 %type <classes> class_list
 %type <class_> class
-
-/* You will want to change the following line. */
 %type <features> feature_list
 %type <feature> feature
 %type <formals> formal_list formals
 %type <formal> formal
 %type <cases> case_list
 %type <case_> case_branch
-%type <expression> expr opt_init
+%type <expression> expr opt_init let_body
 %type <expressions> expr_block_list arg_list args
 
 /* Precedence declarations go here. */
-
+%right LET_PREC
+%right ASSIGN
+%right NOT
+%nonassoc LE '<' '='
+%left '+' '-'
+%left '*' '/'
+%right ISVOID
+%right '~'
+%left '@'
+%left '.'
 
 %%
-/* 
+/*
    Save the root of the abstract syntax tree in a global variable.
 */
 program	: class_list	{ ast_root = program($1); }
@@ -114,7 +116,13 @@ class_list
 		{ $$ = single_Classes($1);
                   parse_results = $$; }
 	| class_list class	/* several classes */
-		{ $$ = append_Classes($1,single_Classes($2)); 
+		{ $$ = append_Classes($1,single_Classes($2));
+                  parse_results = $$; }
+	| error ';'
+		{ $$ = nil_Classes();
+                  parse_results = $$; }
+	| class_list error ';'
+		{ $$ = $1;
                   parse_results = $$; }
 	;
 
@@ -132,6 +140,8 @@ feature_list
 		{ $$ = nil_Features(); }
 	| feature_list feature ';'
 		{ $$ = append_Features($1,single_Features($2)); }
+	| feature_list error ';'
+		{ $$ = $1; }
 	;
 
 feature
@@ -185,6 +195,10 @@ expr_block_list
 		{ $$ = single_Expressions($1); }
 	| expr_block_list expr ';'
 		{ $$ = append_Expressions($1,single_Expressions($2)); }
+	| error ';'
+		{ $$ = nil_Expressions(); }
+	| expr_block_list error ';'
+		{ $$ = $1; }
 	;
 
 case_list
@@ -197,6 +211,17 @@ case_list
 case_branch
 	: OBJECTID ':' TYPEID DARROW expr ';'
 		{ $$ = branch($1,$3,$5); }
+	;
+
+let_body
+	: OBJECTID ':' TYPEID opt_init IN expr %prec LET_PREC
+		{ $$ = let($1,$3,$4,$6); }
+	| OBJECTID ':' TYPEID opt_init ',' let_body
+		{ $$ = let($1,$3,$4,$6); }
+	| error ',' let_body
+		{ $$ = $3; }
+	| error IN expr %prec LET_PREC
+		{ $$ = $3; }
 	;
 
 expr
@@ -214,6 +239,8 @@ expr
 		{ $$ = loop($2,$4); }
 	| '{' expr_block_list '}'
 		{ $$ = block($2); }
+	| LET let_body
+		{ $$ = $2; }
 	| CASE expr OF case_list ESAC
 		{ $$ = typcase($2,$4); }
 	| NEW TYPEID
