@@ -23,7 +23,20 @@ Class C inherits a {
 Class D inherts A {
 };
 
-(* error:  closing brace is missing *)
-Class E inherits A {
-;
+(* error:  missing type identifer *)
+Class E {
+    x : ;
+};
 
+(* error:  unmached operator *)
+Class F {
+    x : Int;
+
+    test() : {
+        x <- 5 ++ 2; 
+    }
+};
+
+(* error:  closing brace is missing *)
+Class G inherits A {
+;
