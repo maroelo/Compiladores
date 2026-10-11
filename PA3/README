@@ -166,6 +166,11 @@ Decisões Relevantes
 
 Testes
 
+good.cl implementa uma classe Calculadora para testar heranca, atributos, metodos, parametros, if, while, let, case e operacoes aritmeticas. 
+Tambem realiza testes de classe vazia, chamadas com @ e em sequencia, SELF_TYPE, isvoid, not, ~, booleanos e variaveis sem inicializacao.
+
+O bad.cl foi implentando com 9 diferentes casos de erro, nomeados de A-I. Os casos cobrem erros em classes, atributos, metodos, variaveis de let e operadores.
+
 O trabalho esta correto?
 - Acreditamos que sim, pois: 
 	-	O bison não indica conflito.
