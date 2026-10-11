@@ -142,3 +142,31 @@ Instructions
 
 Write-up for PA3
 ----------------
+Funcionamento
+- O parser lê os tokens gerados pelo lexer e monta a AST utilizando os construtores em cool-tree.h e seguindo a gramática no manual do cool. 
+
+Decisões Relevantes
+- opt_init gera no_expr() quando não há inicialização pois o semant quebraria se ele recebesse um NULL. 
+
+- f(args) vira dispatch em self, no manual é especificado que o f(x) se torna self.f(x).
+
+- let com várias variaves se torna varios let's aninhados, pois o AST aceita apenas uma variavel por let. 
+
+- Utilizamos precedencia, pois na versão em que não utilizamos ela foram gerados 99 conflitos. As precedencias não escondem nenhum erro de gramatica, apenas resolve ambiguidade. 
+
+| Declaração              |Motivo|
+| ----------------------- | ---- |
+| `%right ASSIGN`         | A expressão `a <- b <- 3` deve atribuir `3` a `b` e, em seguida, o resultado a `a`. Para isso, a associação deve ocorrer da direita para a esquerda.|
+| `%nonassoc LE '<' '='`  | O manual não define expressões como `1 < 2 < 3`. Como `1 < 2` retorna um `Bool`, que não pode ser comparado com um `Int` usando `<`, esse encadeamento deve ser rejeitado como erro de sintaxe. |
+| `%left '+' '-' '*' '/'` | Segue a convenção matemática de associatividade à esquerda.|
+| `%right NOT ISVOID '~'` | São operadores unários prefixos. A associatividade à direita permite encadeamentos como `not not x`.|
+| `%left '@' '.'`         | Define a associatividade à esquerda para chamadas de métodos e despacho estático. Isso permite encadear expressões como `a.f().g()`, garantindo que sejam agrupadas da esquerda para a direita. |
+
+- #include <iostream.h> foi trocado por #include "cool-io.h" pois o iostream não existe mais no g++.
+
+Testes
+
+O trabalho esta correto?
+- Acreditamos que sim, pois: 
+	-	O bison não indica conflito.
+	-	A AST do good.cl e os erros do bad.cl foram oque esperavamos de receber. 
