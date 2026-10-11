@@ -32,11 +32,12 @@ Class E {
 Class F {
     x : Int;
 
-    test() : {
-        x <- 5 ++ 2; 
-    }
+    test() : Int {
+        x <- 5 ++ 2
+    };
 };
 
 (* error:  closing brace is missing *)
 Class G inherits A {
 ;
+
